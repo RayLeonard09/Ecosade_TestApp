@@ -1,35 +1,49 @@
-import { View, Text, StyleSheet, TextInput, Pressable } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { createAccount } from './authService';
 
 const SignIn = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleSignUp = async () => {
+    try {
+      const result = await createAccount(email, password);
+      Alert.alert('Success', `Account created for ${result.user.email}`);
+    } catch (error) {
+      Alert.alert('Error', error.message);
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.formContainer}>
-        <Text style={styles.title}>Sign Up</Text>
-
-        {/* Email input */}
-        <TextInput
-          style={styles.input}
-          placeholder="Enter your email"
-          placeholderTextColor="#aaa"
-          keyboardType="email-address"
-        />
-
-        {/* Password input */}
-        <TextInput
-          style={styles.input}
-          placeholder="Enter your password"
-          placeholderTextColor="#aaa"
-          secureTextEntry
-        />
-
-        {/* Sign Up button */}
-        <Pressable
-          style={styles.button}
-          onPress={() => console.log('Sign Up pressed')}
-        >
-          <Text style={styles.buttonText}>Sign Up</Text>
-        </Pressable>
+      <View style={styles.centered}>
+        <View style={styles.box}>
+          <Text style={styles.title}>Sign Up</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Enter your email"
+            placeholderTextColor="#aaa"
+            keyboardType="email-address"
+            value={email}
+            onChangeText={setEmail}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Enter your password"
+            placeholderTextColor="#aaa"
+            secureTextEntry
+            value={password}
+            onChangeText={setPassword}
+          />
+          <TouchableOpacity
+            style={styles.button}
+            onPress={handleSignUp}
+          >
+            <Text style={styles.buttonText}>Sign Up</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -40,50 +54,57 @@ export default SignIn;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#f2f4f8',
+  },
+  centered: {
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
-    backgroundColor: '#f8f8f8',
   },
-  formContainer: {
-    width: '90%',
-    maxWidth: 380,
+  box: {
+    width: 380,
     backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 20,
+    borderRadius: 16,
+    borderWidth: 2,
+    borderColor: '#4CAF50',
+    padding: 32,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-    elevation: 3, // for Android shadow
+    shadowOpacity: 0.18,
+    shadowRadius: 16,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 8,
   },
   title: {
-    fontSize: 28,
+    fontSize: 32,
     fontWeight: 'bold',
+    marginBottom: 32,
     textAlign: 'center',
-    marginBottom: 20,
+    color: '#222',
   },
   input: {
-    width: '100%',
-    backgroundColor: '#f9f9f9',
-    paddingVertical: 12,
-    paddingHorizontal: 15,
-    borderRadius: 8,
-    borderWidth: 1,
+    height: 48,
     borderColor: '#ccc',
-    marginBottom: 15,
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: 14,
+    marginBottom: 18,
+    backgroundColor: '#f9f9f9',
     fontSize: 16,
   },
   button: {
-    backgroundColor: '#007AFF',
-    paddingVertical: 12,
+    backgroundColor: '#4CAF50',
+    paddingVertical: 16,
     borderRadius: 8,
     alignItems: 'center',
-    marginTop: 10,
+    marginTop: 8,
+    shadowColor: '#4CAF50',
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 2,
   },
   buttonText: {
-    color: 'white',
-    fontSize: 18,
+    color: '#fff',
+    fontSize: 20,
     fontWeight: 'bold',
   },
 });
